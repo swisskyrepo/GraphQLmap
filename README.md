@@ -41,27 +41,29 @@ optional arguments:
 
 
 Use `dump` to dump the GraphQL schema, this function will automaticly populate the "autocomplete" with the found fields.    
-[:movie_camera: Live Example](https://asciinema.org/a/MvgKCTD5zTwHRkqnWMfUAFiCN)
+[:movie_camera: Live Example](https://asciinema.org/a/A2oTO2KrVkkwlFapOdoETqtKa)
 
 ```powershell
 GraphQLmap > dump                     
 ============= [SCHEMA] ===============
-Query                                 
-        doctor: email (String!),      
-        doctors: options (JSON!),     
-        patients:                     
-        patient: id (ID!),            
-        allrendezvous:                
-        rendezvous: id (ID!),         
-Doctor                                
-        id:                           
-        firstName:                    
-        lastName:                       
-        specialty:                    
-        patients: 
-        rendezvous: 
-        email:      
-        password: 
+e.g: name[Type]: arg (Type!)                   
+                                                                                               
+Query                                          
+        doctor[]: email (String!),                                                             
+        doctors[Doctor]:                                                                       
+        patients[Patient]:                                                                     
+        patient[]: id (ID!),                   
+        allrendezvous[Rendezvous]:                                                             
+        rendezvous[]: id (ID!),                                                                
+Doctor                                         
+        id[ID]:                                                                                
+        firstName[String]:                     
+        lastName[String]:                                                                      
+        specialty[String]:                     
+        patients[None]: 
+        rendezvous[None]: 
+        email[String]: 
+        password[String]: 
 [...]
 ```
 
@@ -83,7 +85,7 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin
 ```
 
 Use `GRAPHQL_INCREMENT` and `GRAPHQL_CHARSET` to fuzz a parameter.      
-[:movie_camera: Live Example](https://asciinema.org/a/JdgVALJwVK6BJXwRAELUIBUil)
+[:movie_camera: Live Example](https://asciinema.org/a/FsXjsHQ9YilY18ofoOTrs8wXR)
 
 ```powershell
 GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiGRAPHQL_CHARSET\"} }"){firstName lastName id}}   
@@ -105,7 +107,7 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiG
 ```
 
 Use `BLIND_PLACEHOLDER` inside the query for the `nosqli` function.    
-[:movie_camera: Live Example](https://asciinema.org/a/4JGKwT6PunFzh9OwGm9v0rSgu)
+[:movie_camera: Live Example](https://asciinema.org/a/geENvCljpOCBhBZ2Y3joAJwDc)
 
 ```powershell
 GraphQLmap > nosqli
