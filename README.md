@@ -41,7 +41,7 @@ optional arguments:
 
 
 Use `dump` to dump the GraphQL schema, this function will automaticly populate the "autocomplete" with the found fields.    
-[:movie_camera: Live Example](https://asciinema.org/a/A2oTO2KrVkkwlFapOdoETqtKa)
+[:movie_camera: Live Example](https://asciinema.org/a/14YuWoDOyCztlx7RFykILit4S)
 
 ```powershell
 GraphQLmap > dump                     
@@ -85,7 +85,7 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin
 ```
 
 Use `GRAPHQL_INCREMENT` and `GRAPHQL_CHARSET` to fuzz a parameter.      
-[:movie_camera: Live Example](https://asciinema.org/a/FsXjsHQ9YilY18ofoOTrs8wXR)
+[:movie_camera: Live Example](https://asciinema.org/a/ICCz3PqHVNrBf262x6tQfuwqT)
 
 ```powershell
 GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiGRAPHQL_CHARSET\"} }"){firstName lastName id}}   
@@ -107,7 +107,7 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiG
 ```
 
 Use `BLIND_PLACEHOLDER` inside the query for the `nosqli` function.    
-[:movie_camera: Live Example](https://asciinema.org/a/geENvCljpOCBhBZ2Y3joAJwDc)
+[:movie_camera: Live Example](https://asciinema.org/a/wp2lixHqRV0pxxhZ8nsgUj6s7)
 
 ```powershell
 GraphQLmap > nosqli
