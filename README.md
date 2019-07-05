@@ -11,6 +11,11 @@ Features :
 - SQL injection inside a GraphQL field
 - GraphQL field fuzzing
 
+I :heart: pull requests, feel free to improve this script :)
+
+You can also contribute with a :beers: IRL or with `buymeacoffee.com`
+
+[![Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoff.ee/swissky)
 
 ## Install
 
@@ -116,3 +121,19 @@ Check > 5d089c51dcab2d0032fdd08d
 [+] Data found: 4f537c0a-7da6-4acc-81e1-8c33c02ef3b
 ```
 
+## TODO
+
+* Docker with vulnerable GraphQL
+* Unit tests
+* Handle node
+```
+{
+  user {
+    edges {
+      node {
+        username
+      }
+    }
+  }
+}
+```
