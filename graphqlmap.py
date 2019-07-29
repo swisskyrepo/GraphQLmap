@@ -58,7 +58,7 @@ class GraphQLmap(object):
             elif query == "mysqli":
                 blind_mysql(self.url, self.method)
                 
-            elif query == "mssql":
+            elif query == "mssqli":
                 blind_mssql(self.url, self.method)
 
             else:

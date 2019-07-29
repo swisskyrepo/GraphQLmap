@@ -26,12 +26,12 @@ def requester(URL, method, payload):
         data = {
             "query": payload.replace("+", " ")
         }
-        r = requests.post(URL, data=data)
+        r = requests.post(URL, data=data, verify=False)
         if r.status_code == 500:
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
     else:
-        r = requests.get( URL+"?query={}".format(payload) )
+        r = requests.get( URL+"?query={}".format(payload), verify=False)
     return r
 
 

