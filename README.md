@@ -13,9 +13,7 @@ Features :
 
 I :heart: pull requests, feel free to improve this script :)
 
-You can also contribute with a :beers: IRL or with `buymeacoffee.com`
-
-[![Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoff.ee/swissky)
+You can also contribute with a :beers: IRL or using Github Sponsoring button.
 
 ## Install
 
@@ -31,12 +29,13 @@ $ python graphqlmap.py
                   | |                                       | |    
                   |_|                                       |_|    
                                          Author:Swissky Version:1.0
-usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]]
+usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]]
 
 optional arguments:
-  -h, --help      show this help message and exit
-  -u URL          URL to query : example.com/graphql?query={}
-  -v [VERBOSITY]  Enable verbosity
+  -h, --help         show this help message and exit
+  -u URL             URL to query : example.com/graphql?query={}
+  -v [VERBOSITY]     Enable verbosity
+  --method [METHOD]  HTTP Method to use interact with /graphql endpoint
 ```
 
 
