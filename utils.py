@@ -21,12 +21,12 @@ def jq(data):
     return json.dumps(data, indent=4, sort_keys=True)
 
 
-def requester(URL, method, payload):
+def requester(URL, method, payload, headers=None):
     if method == "POST":
         data = {
             "query": payload.replace("+", " ")
         }
-        r = requests.post(URL, data=data, verify=False)
+        r = requests.post(URL, data=data, verify=False, headers=headers)
         if r.status_code == 500:
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
@@ -40,7 +40,8 @@ def parse_args():
     parser.add_argument('-u', action ='store', dest='url',  help="URL to query : example.com/graphql?query={}")
     parser.add_argument('-v', action ='store', dest='verbosity', help="Enable verbosity", nargs='?', const=True)
     parser.add_argument('--method', action ='store', dest='method', help="HTTP Method to use interact with /graphql endpoint", nargs='?',  const=True, default="GET")
-    results = parser.parse_args() 
+    parser.add_argument('--headers', action='store', dest='headers', help="HTTP Headers sent to /graphql endpoint", nargs='?', const=True, type=str)
+    results = parser.parse_args()
     if results.url == None:
         parser.print_help()
         exit()
