@@ -31,19 +31,26 @@ $ python graphqlmap.py
                   | |                                       | |    
                   |_|                                       |_|    
                                          Author:Swissky Version:1.0
-usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]]
+usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]] [--headers [HEADERS]]
 
 optional arguments:
-  -h, --help         show this help message and exit
-  -u URL             URL to query : example.com/graphql?query={}
-  -v [VERBOSITY]     Enable verbosity
-  --method [METHOD]  HTTP Method to use interact with /graphql endpoint
+  -h, --help          show this help message and exit
+  -u URL              URL to query : example.com/graphql?query={}
+  -v [VERBOSITY]      Enable verbosity
+  --method [METHOD]   HTTP Method to use interact with /graphql endpoint
+  --headers [HEADERS] HTTP Headers sent to /graphql endpoint
 ```
 
 
 ## Features and examples
 
 :warning: Examples are based on several CTF challenges from HIP2019.
+
+### Connect to a graphql endpoint
+
+```
+python3 graphqlmap.py -u https://yourhostname.com/graphql -v --method POST --headers '{"Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0Ijoibm8gc2VjcmV0cyBoZXJlID1QIn0.JqqdOesC-R4LtOS9H0y7bIq-M8AGYjK92x4K3hcBA6o"}'
+```
 
 ### Dump a GraphQL schema
 
