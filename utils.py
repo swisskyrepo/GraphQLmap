@@ -1,11 +1,8 @@
 #!/usr/bin/python
 import argparse
 import json
-import re
-import readline
+
 import requests
-import sys
-import time
 
 cmdlist = ["exit", "help", "dump_old", "dump_new", "postgresqli", "mysqli", "mssqli", "nosqli", "mutation", "edges",
            "node", "$regex", "$ne", "__schema"]

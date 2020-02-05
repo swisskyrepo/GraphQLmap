@@ -1,11 +1,4 @@
 #!/usr/bin/python
-import argparse
-import json
-import re
-import readline
-import requests
-import sys
-import time
 from utils import *
 
 
