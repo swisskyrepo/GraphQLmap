@@ -9,13 +9,14 @@ import time
 from utils import *
 from attacks import *
 
+
 class GraphQLmap(object):
-    author   = "@pentest_swissky"
-    version  = "1.0"
+    author = "@pentest_swissky"
+    version = "1.0"
     endpoint = "graphql"
-    method   = "POST"
+    method = "POST"
     args = None
-    url  = None
+    url = None
     headers = None
 
     def __init__(self, args):
@@ -27,12 +28,12 @@ class GraphQLmap(object):
         print("  \_____|_|  \__,_| .__/|_| |_|\___\_\______|_| |_| |_|\__,_| .__/ ")
         print("                  | |                                       | |    ")
         print("                  |_|                                       |_|    ")
-        print(" "*30, end='')
+        print(" " * 30, end='')
         print(f"\033[1mAuthor\033[0m: {self.author} \033[1mVersion\033[0m: {self.version} ")
         self.args = args
         self.url = args.url
         self.method = args.method
-        self.headers = None if not args.headers else json.loads(args.headers) 
+        self.headers = None if not args.headers else json.loads(args.headers)
 
         while True:
             query = input("GraphQLmap > ")
@@ -42,7 +43,7 @@ class GraphQLmap(object):
 
             elif query == "help":
                 display_help()
-                
+
             elif query == "debug":
                 display_types(self.url, self.method, self.headers)
 
@@ -66,6 +67,7 @@ class GraphQLmap(object):
 
             else:
                 exec_advanced(args.url, self.method, query, self.headers)
+
 
 if __name__ == "__main__":
     readline.set_completer(auto_completer)
