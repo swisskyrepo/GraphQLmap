@@ -25,7 +25,7 @@ def dump_schema(url, method, graphversion, headers):
         :param headers: Headers to use
         :param url: URL of the GraphQL instance
         :param method: HTTP method to use
-        :param graphversion: GraphQL version        
+        :param graphversion: GraphQL version
         :return: None
     """
 
@@ -78,8 +78,10 @@ def dump_schema(url, method, graphversion, headers):
                     print("")
 
 
-def exec_graphql(URL, method, query, headers={}, only_length=0):
-    r = requester(URL, method, query, headers)
+def exec_graphql(url, method, query, headers=None, only_length=0):
+    if headers is None:
+        headers = {}
+    r = requester(url, method, query, headers)
     try:
         graphql = r.json()
         errors = graphql.get("errors")
