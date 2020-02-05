@@ -63,7 +63,7 @@ def dump_schema(url, method, graphversion, headers):
 
                         try:
                             args['type']['kind']
-                        except:
+                        except Exception:
                             pass
 
                         try:
