@@ -1,0 +1,4 @@
+pyreadline ; sys_platform == 'win32'
+readline ; sys_platform !='win32'
+argparse
+requests
