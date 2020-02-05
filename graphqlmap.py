@@ -19,7 +19,7 @@ class GraphQLmap(object):
     url = None
     headers = None
 
-    def __init__(self, args):
+    def __init__(self, args_graphql):
         print("   _____                 _      ____  _                            ")
         print("  / ____|               | |    / __ \| |                           ")
         print(" | |  __ _ __ __ _ _ __ | |__ | |  | | |     _ __ ___   __ _ _ __  ")
@@ -30,10 +30,10 @@ class GraphQLmap(object):
         print("                  |_|                                       |_|    ")
         print(" " * 30, end='')
         print(f"\033[1mAuthor\033[0m: {self.author} \033[1mVersion\033[0m: {self.version} ")
-        self.args = args
-        self.url = args.url
-        self.method = args.method
-        self.headers = None if not args.headers else json.loads(args.headers)
+        self.args = args_graphql
+        self.url = args_graphql.url
+        self.method = args_graphql.method
+        self.headers = None if not args_graphql.headers else json.loads(args_graphql.headers)
 
         while True:
             query = input("GraphQLmap > ")
@@ -66,7 +66,7 @@ class GraphQLmap(object):
                 blind_mssql(self.url, self.method, self.headers)
 
             else:
-                exec_advanced(args.url, self.method, query, self.headers)
+                exec_advanced(args_graphql.url, self.method, query, self.headers)
 
 
 if __name__ == "__main__":
