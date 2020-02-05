@@ -49,7 +49,7 @@ def dump_schema(url, method, graphversion, headers):
                     field_type = ""
                     try:
                         field_type = fields['type']['ofType']['name']
-                    except Exception as e:
+                    except Exception:
                         pass
 
                     print("\t\033[92m{}\033[0m[\033[94m{}\033[0m]: ".format(fields['name'], field_type), end='')
@@ -59,17 +59,16 @@ def dump_schema(url, method, graphversion, headers):
 
                     for args in fields['args']:
                         args_name = args.get('name')
-                        args_tkind = ""
                         args_ttype = ""
 
                         try:
-                            args_tkind = args['type']['kind']
+                            args['type']['kind']
                         except:
                             pass
 
                         try:
                             args_ttype = args['type']['ofType']['name']
-                        except Exception as e:
+                        except Exception:
                             pass
 
                         print("{} (\033[93m{}\033[0m!), ".format(args_name, args_ttype), end='')
