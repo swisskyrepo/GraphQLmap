@@ -44,7 +44,7 @@ def dump_schema(url, method, graphversion, headers):
         if types['kind'] == "OBJECT":
             print(types['name'])
 
-            if not "__" in types['name']:
+            if "__" not in types['name']:
                 for fields in types['fields']:
                     field_type = ""
                     try:
