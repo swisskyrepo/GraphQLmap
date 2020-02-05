@@ -23,17 +23,17 @@ def jq(data):
     return json.dumps(data, indent=4, sort_keys=True)
 
 
-def requester(URL, method, payload, headers=None):
+def requester(url, method, payload, headers=None):
     if method == "POST":
         data = {
             "query": payload.replace("+", " ")
         }
-        r = requests.post(URL, data=data, verify=False, headers=headers)
+        r = requests.post(url, data=data, verify=False, headers=headers)
         if r.status_code == 500:
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
     else:
-        r = requests.get(URL + "?query={}".format(payload), verify=False)
+        r = requests.get(url + "?query={}".format(payload), verify=False)
     return r
 
 
