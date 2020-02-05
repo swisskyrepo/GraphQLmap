@@ -54,11 +54,11 @@ python3 graphqlmap.py -u https://yourhostname.com/graphql -v --method POST --hea
 
 ### Dump a GraphQL schema
 
-Use `dump` to dump the GraphQL schema, this function will automaticly populate the "autocomplete" with the found fields.    
+Use `dump_new` to dump the GraphQL schema, this function will automaticly populate the "autocomplete" with the found fields.    
 [:movie_camera: Live Example](https://asciinema.org/a/14YuWoDOyCztlx7RFykILit4S)
 
 ```powershell
-GraphQLmap > dump                     
+GraphQLmap > dump_new                     
 ============= [SCHEMA] ===============
 e.g: name[Type]: arg (Type!)                   
                                                                                                
