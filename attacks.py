@@ -116,8 +116,8 @@ def exec_advanced(URL, method, query, headers):
     # Allow a user to bruteforce character from a charset
     # e.g: {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiGRAPHQL_CHARSET\"} }"){firstName lastName id}}
     if "GRAPHQL_CHARSET" in query:
-        GRAPHQL_CHARSET = "!$%\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-        for c in GRAPHQL_CHARSET:
+        graphql_charset = "!$%\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+        for c in graphql_charset:
             length = exec_graphql(URL, method, query.replace("GRAPHQL_CHARSET", c), headers, only_length=1)
             print(
                 "[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace("GRAPHQL_CHARSET", c)))
