@@ -1,13 +1,12 @@
 #!/usr/bin/python
 import argparse
 import json
-import re
-import readline
-import requests
-import sys
-import time
 
-cmdlist  = ["exit", "help", "dump_old", "dump_new", "postgresqli", "mysqli", "mssqli", "nosqli", "mutation", "edges", "node", "$regex", "$ne", "__schema"]
+import requests
+
+cmdlist = ["exit", "help", "dump_old", "dump_new", "postgresqli", "mysqli", "mssqli", "nosqli", "mutation", "edges",
+           "node", "$regex", "$ne", "__schema"]
+
 
 def auto_completer(text, state):
     options = [x for x in cmdlist if x.startswith(text)]
@@ -21,28 +20,30 @@ def jq(data):
     return json.dumps(data, indent=4, sort_keys=True)
 
 
-def requester(URL, method, payload, headers=None):
+def requester(url, method, payload, headers=None):
     if method == "POST":
         data = {
             "query": payload.replace("+", " ")
         }
-        r = requests.post(URL, data=data, verify=False, headers=headers)
+        r = requests.post(url, data=data, verify=False, headers=headers)
         if r.status_code == 500:
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
     else:
-        r = requests.get( URL+"?query={}".format(payload), verify=False)
+        r = requests.get(url + "?query={}".format(payload), verify=False)
     return r
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-u', action ='store', dest='url',  help="URL to query : example.com/graphql?query={}")
-    parser.add_argument('-v', action ='store', dest='verbosity', help="Enable verbosity", nargs='?', const=True)
-    parser.add_argument('--method', action ='store', dest='method', help="HTTP Method to use interact with /graphql endpoint", nargs='?',  const=True, default="GET")
-    parser.add_argument('--headers', action='store', dest='headers', help="HTTP Headers sent to /graphql endpoint", nargs='?', const=True, type=str)
+    parser.add_argument('-u', action='store', dest='url', help="URL to query : example.com/graphql?query={}")
+    parser.add_argument('-v', action='store', dest='verbosity', help="Enable verbosity", nargs='?', const=True)
+    parser.add_argument('--method', action='store', dest='method',
+                        help="HTTP Method to use interact with /graphql endpoint", nargs='?', const=True, default="GET")
+    parser.add_argument('--headers', action='store', dest='headers', help="HTTP Headers sent to /graphql endpoint",
+                        nargs='?', const=True, type=str)
     results = parser.parse_args()
-    if results.url == None:
+    if results.url is None:
         parser.print_help()
         exit()
     return results

