@@ -1,5 +1,8 @@
 #!/usr/bin/python
-import readline
+try:
+    import readline
+except ImportError:
+    import pyreadline as readline
 
 from attacks import *
 import urllib3
