@@ -20,7 +20,7 @@ You can also contribute with a :beers: IRL or using Github Sponsoring button.
 ## Install
 
 ```basic
-$ git clone github.com/swisskyrepo/GraphQLmap
+$ git clone git@github.com:swisskyrepo/GraphQLmap.git
 $ python graphqlmap.py                                                              
    _____                 _      ____  _                            
   / ____|               | |    / __ \| |                           
