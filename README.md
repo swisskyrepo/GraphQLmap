@@ -39,6 +39,7 @@ optional arguments:
   -v [VERBOSITY]      Enable verbosity
   --method [METHOD]   HTTP Method to use interact with /graphql endpoint
   --headers [HEADERS] HTTP Headers sent to /graphql endpoint
+  --json              Send requests using POST and JSON
 ```
 
 

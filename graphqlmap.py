@@ -18,6 +18,7 @@ class GraphQLmap(object):
     args = None
     url = None
     headers = None
+    use_json = False
 
     def __init__(self, args_graphql):
         print("   _____                 _      ____  _                            ")
@@ -34,6 +35,7 @@ class GraphQLmap(object):
         self.url = args_graphql.url
         self.method = args_graphql.method
         self.headers = None if not args_graphql.headers else json.loads(args_graphql.headers)
+        self.use_json = True if args_graphql.use_json else False
 
         while True:
             query = input("GraphQLmap > ")
@@ -45,28 +47,28 @@ class GraphQLmap(object):
                 display_help()
 
             elif query == "debug":
-                display_types(self.url, self.method, self.headers)
+                display_types(self.url, self.method, self.headers, self.use_json)
 
             elif query == "dump_new":
-                dump_schema(self.url, self.method, 15, self.headers)
+                dump_schema(self.url, self.method, 15, self.headers, self.use_json)
 
             elif query == "dump_old":
-                dump_schema(self.url, self.method, 14, self.headers)
+                dump_schema(self.url, self.method, 14, self.headers, self.use_json)
 
             elif query == "nosqli":
-                blind_nosql(self.url, self.method, self.headers)
+                blind_nosql(self.url, self.method, self.headers, self.use_json)
 
             elif query == "postgresqli":
-                blind_postgresql(self.url, self.method, self.headers)
+                blind_postgresql(self.url, self.method, self.headers, self.use_json)
 
             elif query == "mysqli":
-                blind_mysql(self.url, self.method, self.headers)
+                blind_mysql(self.url, self.method, self.headers, self.use_json)
 
             elif query == "mssqli":
-                blind_mssql(self.url, self.method, self.headers)
+                blind_mssql(self.url, self.method, self.headers, self.use_json)
 
             else:
-                exec_advanced(args_graphql.url, self.method, query, self.headers)
+                exec_advanced(args_graphql.url, self.method, query, self.headers, self.use_json)
 
 
 if __name__ == "__main__":
