@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from utils import *
+from graphqlmap.utils import *
 
 
 def display_types(URL, method, headers, use_json):
