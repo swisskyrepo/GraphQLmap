@@ -35,7 +35,7 @@ def requester(url, method, payload, headers=None, use_json=False):
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
     else:
-        r = requests.get(url + "?query={}".format(payload), verify=False)
+        r = requests.get(url + "?query={}".format(payload), verify=False, headers=headers)
     return r
 
 
