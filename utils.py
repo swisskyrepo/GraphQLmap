@@ -60,6 +60,6 @@ def display_help():
     print("[+] \033[92mdump_new    \033[0m: dump GraphQL schema (IntrospectionQuery)")
     print("[+] \033[92mnosqli      \033[0m: exploit a nosql injection inside a GraphQL query")
     print("[+] \033[92mpostgresqli \033[0m: exploit a sql injection inside a GraphQL query")
-    print("[+] \033[92mysqli       \033[0m: exploit a sql injection inside a GraphQL query")
-    print("[+] \033[92mssqli       \033[0m: exploit a sql injection inside a GraphQL query")
+    print("[+] \033[92mmysqli       \033[0m: exploit a sql injection inside a GraphQL query")
+    print("[+] \033[92mmssqli       \033[0m: exploit a sql injection inside a GraphQL query")
     print("[+] \033[92mexit        \033[0m: gracefully exit the application")
