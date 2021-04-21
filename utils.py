@@ -44,7 +44,7 @@ def parse_args():
     parser.add_argument('-u', action='store', dest='url', help="URL to query : example.com/graphql?query={}")
     parser.add_argument('-v', action='store', dest='verbosity', help="Enable verbosity", nargs='?', const=True)
     parser.add_argument('--method', action='store', dest='method',
-                        help="HTTP Method to use interact with /graphql endpoint", nargs='?', const=True, default="GET")
+                        help="HTTP Method to use interact with /graphql endpoint", nargs='?', const=True)
     parser.add_argument('--headers', action='store', dest='headers', help="HTTP Headers sent to /graphql endpoint",
                         nargs='?', const=True, type=str)
     parser.add_argument('--json', action='store', dest='use_json', help="Use JSON encoding, implies POST", nargs='?', const=True, type=bool)
