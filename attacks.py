@@ -1,6 +1,6 @@
 #!/usr/bin/python
+import time
 from utils import *
-
 
 def display_types(URL, method, headers, use_json):
     payload = "{__schema{types{name}}}"
