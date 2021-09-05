@@ -54,6 +54,48 @@ def parse_args():
         exit()
     return results
 
+def fix_headers(headers_str):
+    try:
+        jsonStartPos = headers_str.find('{') + 1
+        headers_str = headers_str[:jsonStartPos] + '"' + headers_str[jsonStartPos:]
+        jsonEndPos = headers_str.find('}')
+        headers_str = headers_str[:jsonEndPos] + '"' + headers_str[jsonEndPos:]
+
+        start = 0
+        while True:
+            start = headers_str.find(':', start)
+            if start == -1:
+                break
+            headers_str = headers_str[:start] + '"' + headers_str[start:]
+            start += 2
+
+        start = 0
+        while True:
+            start = headers_str.find(':', start) + 1
+            if start == 0:
+                break
+            headers_str = headers_str[:start] + '"' + headers_str[start:]
+            start += 3
+
+        start = 0
+        while True:
+            start = headers_str.find(',', start)
+            if start == -1:
+                break
+            headers_str = headers_str[:start] + '"' + headers_str[start:]
+            start += 2
+
+        start = 0
+        while True:
+            start = headers_str.find(',', start) + 1
+            if start == 0:
+                break
+            headers_str = headers_str[:start] + '"' + headers_str[start:]
+            start += 3
+
+        headers_str.replace('\'', '')
+    except:
+        pass
 
 def display_help():
     print("[+] \033[92mdump_old    \033[0m: dump GraphQL schema (fragment+FullType)")
