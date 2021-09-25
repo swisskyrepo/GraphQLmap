@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from utils import *
+import time
 
 
 def display_types(URL, method, headers, use_json):
