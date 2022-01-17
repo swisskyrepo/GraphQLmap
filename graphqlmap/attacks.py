@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from utils import *
+from graphqlmap.utils import *
 import re
 import time
 

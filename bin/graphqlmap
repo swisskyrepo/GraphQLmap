@@ -5,7 +5,7 @@ try:
 except ImportError:
     import pyreadline as readline
 
-from attacks import *
+from graphqlmap.attacks import *
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

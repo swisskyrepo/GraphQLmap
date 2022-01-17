@@ -23,7 +23,8 @@ You can also contribute with a :beers: IRL or using Github Sponsoring button.
 
 ```basic
 $ git clone https://github.com/swisskyrepo/GraphQLmap
-$ python graphqlmap.py                                                              
+$ python setup.py install
+$ graphqlmap                                                              
    _____                 _      ____  _                            
   / ____|               | |    / __ \| |                           
  | |  __ _ __ __ _ _ __ | |__ | |  | | |     _ __ ___   __ _ _ __  
@@ -54,10 +55,10 @@ optional arguments:
 
 ```py
 # Connect using POST and providing an authentication token
-python3 graphqlmap.py -u https://yourhostname.com/graphql -v --method POST --headers '{"Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0Ijoibm8gc2VjcmV0cyBoZXJlID1QIn0.JqqdOesC-R4LtOS9H0y7bIq-M8AGYjK92x4K3hcBA6o"}'
+graphqlmap -u https://yourhostname.com/graphql -v --method POST --headers '{"Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0Ijoibm8gc2VjcmV0cyBoZXJlID1QIn0.JqqdOesC-R4LtOS9H0y7bIq-M8AGYjK92x4K3hcBA6o"}'
 
 # Pass request through Burp Proxy
-python graphqlmap.py -u "http://172.17.0.1:5013/graphql" --proxy http://127.0.0.1:8080
+graphqlmap -u "http://172.17.0.1:5013/graphql" --proxy http://127.0.0.1:8080
 ```
 
 ### Dump a GraphQL schema
