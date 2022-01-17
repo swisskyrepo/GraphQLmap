@@ -196,6 +196,8 @@ GraphQLmap > mssqli
 
 ## TODO
 
+* GraphQL Field Suggestions : Find 
+* Generate mutation query
 * Unit tests
 * Handle node
 ```

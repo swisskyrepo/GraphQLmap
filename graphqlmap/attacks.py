@@ -34,12 +34,16 @@ def dump_schema(url, method, graphversion, headers, use_json, proxy):
     print("============= [SCHEMA] ===============")
     print("e.g: \033[92mname\033[0m[\033[94mType\033[0m]: arg (\033[93mType\033[0m!)\n")
 
-    for types in schema['data']['__schema']['types']:
+    line = 0
+
+    for line, types in enumerate(schema['data']['__schema']['types']):
+
         if types['kind'] == "OBJECT":
-            print(types['name'])
+            print(f"{line:02}: {types['name']}")
 
             if "__" not in types['name']:
                 for fields in types['fields']:
+                    mutation_args = ""
                     field_type = ""
                     try:
                         field_type = fields['type']['ofType']['name']
@@ -52,23 +56,30 @@ def dump_schema(url, method, graphversion, headers, use_json, proxy):
                     cmdlist.append(fields['name'])
 
                     for args in fields['args']:
-                        args_name = args.get('name')
+                        args_name = args.get('name', '')
                         args_ttype = ""
 
                         try:
-                            args['type']['kind']
-                        except Exception:
-                            pass
-
-                        try:
-                            args_ttype = args['type']['ofType']['name']
+                            if args['type']['name'] != None:
+                                args_ttype = args['type']['name']
+                            else:
+                                args_ttype = args['type']['ofType']['name']
                         except Exception:
                             pass
 
                         print("{} (\033[93m{}\033[0m!), ".format(args_name, args_ttype), end='')
                         cmdlist.append(args_name)
 
+                        # generate mutation query
+                        mutation_args += args_name + ":" + args_ttype + ","
                     print("")
+
+                    if (types['name'].lower().strip() == "mutations"):
+                        mutation_args = mutation_args.replace('String', '"string"')
+                        mutation_args = mutation_args.replace('Boolean', 'true')
+                        mutation_args = mutation_args.replace('Int', '1')
+                        mutation_args = mutation_args[:-1]
+                        print("\033[95m\t(?) mutation{" + fields['name'] + "(" + mutation_args + "){ result }}\033[0m")
 
 
 def exec_graphql(url, method, query, proxy, headers=None, use_json=False, only_length=0):
@@ -93,7 +104,13 @@ def exec_graphql(url, method, query, proxy, headers=None, use_json=False, only_l
 
                 # otherwise return the JSON content
                 else:
-                    return jq(graphql)
+                    output = jq(graphql)
+
+                    # basic syntax highlighting
+                    output = output.replace("{", "\033[92m{\033[0m")
+                    output = output.replace("}", "\033[92m{\033[0m")
+                    output = re.sub(r'"(.*?)"', r'\033[95m"\1"\033[0m', output)
+                    return output
 
             except:
                 # when the content isn't a valid JSON, return a text
