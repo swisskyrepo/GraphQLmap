@@ -36,6 +36,11 @@ def dump_schema(url, method, graphversion, headers, use_json, proxy):
 
     line = 0
 
+    if 'data' not in schema:
+        print('[+] Unable to download schema.')
+        
+        exit()
+        
     for line, types in enumerate(schema['data']['__schema']['types']):
 
         if types['kind'] == "OBJECT":
