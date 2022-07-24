@@ -70,8 +70,8 @@ def dump_schema(url, method, graphversion, headers, use_json, proxy):
                         print("{} (\033[93m{}\033[0m!), ".format(args_name, args_ttype), end='')
                         cmdlist.append(args_name)
 
-                        # generate mutation query
-                        mutation_args += args_name + ":" + args_ttype + ","
+                        # generate mutation query as a formatted string to avoid the program crashing when args_ttype is None
+                        mutation_args += f'{args_name}:{args_ttype},'
                     print("")
 
                     if (types['name'].lower().strip() == "mutations"):
