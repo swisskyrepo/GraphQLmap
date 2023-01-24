@@ -71,7 +71,7 @@ class GraphQLmap(object):
                 blind_mssql(self.url, self.method, self.proxy, self.headers, self.use_json)
 
             else:
-                exec_advanced(args_graphql.url, self.method, query, self.proxy, self.headers, self.use_json)
+                exec_advanced(self.url, self.method, query, self.proxy, self.headers, self.use_json)
 
 
 if __name__ == "__main__":
