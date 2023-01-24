@@ -63,7 +63,7 @@ graphqlmap -u "http://172.17.0.1:5013/graphql" --proxy http://127.0.0.1:8080
 
 ### Dump a GraphQL schema
 
-Use `dump_new` to dump the GraphQL schema, this function will automaticly populate the "autocomplete" with the found fields.    
+Use `dump_new` to dump the GraphQL schema, this function will automatically populate the "autocomplete" with the found fields.    
 [:movie_camera: Live Example](https://asciinema.org/a/14YuWoDOyCztlx7RFykILit4S)
 
 ```powershell
