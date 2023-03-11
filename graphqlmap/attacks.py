@@ -87,10 +87,10 @@ def dump_schema(url, method, graphversion, headers, use_json, proxy):
                         print("\033[95m\t(?) mutation{" + fields['name'] + "(" + mutation_args + "){ result }}\033[0m")
 
 
-def exec_graphql(url, method, query, proxy, headers=None, use_json=False, only_length=0):
+def exec_graphql(url, method, query, proxy, headers=None, use_json=False, only_length=0, is_batch=0):
     if headers is None:
         headers = {}
-    r = requester(url, method, query, headers, use_json, proxy)
+    r = requester(url, method, query, proxy, headers=headers, use_json=use_json, is_batch=is_batch)
     try:
         graphql = r.json()
         errors = graphql.get("errors")
@@ -146,9 +146,26 @@ def exec_advanced(url, method, query, headers, use_json, proxy):
             length = exec_graphql(url, method, query.replace(pattern, str(i)), proxy, headers, use_json, only_length=1)
             print("[+] \033[92mQuery\033[0m: (\033[91m{}\033[0m) {}".format(length, query.replace(pattern, str(i))))
 
+
+    # Allow a user to send multiple queries in a single request
+    # e.g: BATCHING_3 {__schema{ types{name}}}
+    elif "BATCHING_" in query:
+        regex = re.compile("BATCHING_(\d*)")
+        match = regex.findall(query)
+        batch = int(match[0])
+        query = query.replace('BATCHING_' + match[0], '')
+        print(f"[+] Sending a batch of {batch} queries")
+        r = requester(url, "POST", query, proxy, headers, use_json, is_batch=batch)
+        output = len(r.json())
+        if output == batch:
+            print(f"[+] Successfully received {batch} outputs")
+        else:
+            print(f"[+] Backend did not sent back {batch} outputs, got {output}")
+
+
     # Otherwise execute the query and display the JSON result
     else:
-        print(exec_graphql(url, method, query, proxy, headers, use_json))
+        print(exec_graphql(url, method, query, proxy, headers=headers, use_json=use_json))
 
 
 def blind_postgresql(url, method, proxy, headers, use_json):

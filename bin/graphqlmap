@@ -12,7 +12,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class GraphQLmap(object):
     author = "@pentest_swissky"
-    version = "1.0"
+    version = "1.1"
     endpoint = "graphql"
     method = "POST"
     args = None
@@ -71,7 +71,8 @@ class GraphQLmap(object):
                 blind_mssql(self.url, self.method, self.proxy, self.headers, self.use_json)
 
             else:
-                exec_advanced(self.url, self.method, query, self.proxy, self.headers, self.use_json)
+                print(self.headers)
+                exec_advanced(self.url, self.method, query, self.headers, self.use_json, self.proxy)
 
 
 if __name__ == "__main__":

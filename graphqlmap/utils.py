@@ -20,17 +20,30 @@ def jq(data):
     return json.dumps(data, indent=4, sort_keys=True)
 
 
-def requester(url, method, payload, proxy, headers=None, use_json=False):
+def requester(url, method, payload, proxy, headers=None, use_json=False, is_batch=0):
     if method == "POST" or use_json:
-        data = {
-            "query": payload.replace("+", " ")
-        }
         new_headers = {} if headers is None else headers.copy()
-        new_data = data.copy()
-        if use_json:
-            new_headers['Content-Type'] = 'application/json'
-            new_data = json.dumps(data)
-        r = requests.post(url, data=new_data, verify=False, headers=new_headers, proxies=proxy)
+        
+        data = None
+        if is_batch == 0:
+            data = {
+                "query": payload.replace("+", " ")
+            }
+            new_data = data.copy()
+
+            if use_json:
+                new_headers['Content-Type'] = 'application/json'
+                new_data = json.dumps(data)
+            r = requests.post(url, data=new_data, verify=False, headers=new_headers, proxies=proxy)
+
+        else:
+            data = []
+            for i in range(is_batch):
+                data.append( {"query": payload} )
+                
+            r = requests.post(url, json=data, verify=False, headers=new_headers, proxies=proxy)
+
+
         if r.status_code == 500:
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
