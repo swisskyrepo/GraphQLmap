@@ -54,7 +54,7 @@ def requester(url, method, payload, proxy, headers=None, use_json=False, is_batc
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-u', action='store', dest='url', help="URL to query : example.com/graphql?query={}")
+    parser.add_argument('-u', action='store', dest='url', help="URL to query : https://example.com/graphql?query={}")
     parser.add_argument('-v', action='store', dest='verbosity', help="Enable verbosity", nargs='?', const=True)
     parser.add_argument('--method', action='store', dest='method',
                         help="HTTP Method to use interact with /graphql endpoint", nargs='?', const=True, default="GET")
