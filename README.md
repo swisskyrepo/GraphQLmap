@@ -38,7 +38,7 @@ usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]] [--heade
 
 optional arguments:
   -h, --help           show this help message and exit
-  -u URL               URL to query : example.com/graphql?query={}
+  -u URL               URL to query : https://example.com/graphql?query={}
   -v [VERBOSITY]       Enable verbosity
   --method [METHOD]    HTTP Method to use interact with /graphql endpoint
   --headers [HEADERS]  HTTP Headers sent to /graphql endpoint
