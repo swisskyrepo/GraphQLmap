@@ -1,0 +1,1 @@
+from graphqlmap.cli import main; main()
