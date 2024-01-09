@@ -5,7 +5,7 @@ import platform
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-dependencies = ['requests']
+dependencies = ['httpx', 'urllib3']
 
 if platform.system() == "Windows":
     dependencies.append('pyreadline3')

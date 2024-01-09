@@ -1,7 +1,7 @@
 import argparse
 import json
 
-import requests
+import httpx
 
 cmdlist = ["exit", "help", "dump_via_fragment", "dump_via_introspection", "postgresqli", "mysqli", "mssqli", "nosqli", "mutation", "edges",
            "node", "$regex", "$ne", "__schema"]
@@ -33,21 +33,21 @@ def requester(url, method, payload, proxy, headers=None, use_json=False, is_batc
             if use_json:
                 new_headers['Content-Type'] = 'application/json'
                 new_data = json.dumps(data)
-            r = requests.post(url, data=new_data, verify=False, headers=new_headers, proxies=proxy)
+            r = httpx.post(url, data=new_data, verify=False, headers=new_headers, proxies=proxy)
 
         else:
             data = []
             for i in range(is_batch):
                 data.append( {"query": payload} )
                 
-            r = requests.post(url, json=data, verify=False, headers=new_headers, proxies=proxy)
+            r = httpx.post(url, json=data, verify=False, headers=new_headers, proxies=proxy)
 
 
         if r.status_code == 500:
             print("\033[91m/!\ API didn't respond correctly to a POST method !\033[0m")
             return None
     else:
-        r = requests.get(url + "?query={}".format(payload), verify=False, headers=headers, proxies=proxy)
+        r = httpx.get(url + "?query={}".format(payload), verify=False, headers=headers, proxies=proxy)
     return r
 
 
