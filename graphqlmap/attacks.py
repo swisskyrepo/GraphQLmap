@@ -113,7 +113,7 @@ def exec_graphql(url, method, query, proxy, headers=None, use_json=False, only_l
 
                     # basic syntax highlighting
                     output = output.replace("{", "\033[92m{\033[0m")
-                    output = output.replace("}", "\033[92m{\033[0m")
+                    output = output.replace("}", "\033[92m}\033[0m")
                     output = re.sub(r'"(.*?)"', r'\033[95m"\1"\033[0m', output)
                     return output
 

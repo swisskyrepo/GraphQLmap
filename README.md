@@ -129,9 +129,9 @@ GraphQLmap > mutation { importPaste(host:"localhost", port:80, path:"/ ; id", sc
     "data": {
         "importPaste": {
             "result": "uid=1000(dvga) gid=1000(dvga) groups=1000(dvga)\n"
-        {
-    {
-{
+        }
+    }
+}
 ```
 
 
