@@ -24,7 +24,7 @@ You can also contribute with a :beers: IRL or using Github Sponsoring button.
 ```bash
 $ pip3 install pipx
 $ pipx ensurepath 
-$ pipx install git+https://github.com/swisskyrepo/GraphQLmap                                                       
+$ pipx install git+https://github.com/mxrch/GraphQLmap                                                       
    _____                 _      ____  _                            
   / ____|               | |    / __ \| |                           
  | |  __ _ __ __ _ _ __ | |__ | |  | | |     _ __ ___   __ _ _ __  
