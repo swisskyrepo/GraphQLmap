@@ -1,3 +1,3 @@
-pyreadline ; sys_platform == 'win32'
+pyreadline3 ; sys_platform == 'win32'
 readline ; sys_platform !='win32'
-requests
+httpx

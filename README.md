@@ -21,10 +21,10 @@ You can also contribute with a :beers: IRL or using Github Sponsoring button.
 
 ## Install
 
-```basic
-$ git clone https://github.com/swisskyrepo/GraphQLmap
-$ python setup.py install
-$ graphqlmap                                                              
+```bash
+$ pip3 install pipx
+$ pipx ensurepath 
+$ pipx install git+https://github.com/mxrch/GraphQLmap                                                       
    _____                 _      ____  _                            
   / ____|               | |    / __ \| |                           
  | |  __ _ __ __ _ _ __ | |__ | |  | | |     _ __ ___   __ _ _ __  
@@ -34,7 +34,7 @@ $ graphqlmap
                   | |                                       | |    
                   |_|                                       |_|    
                                          Author:Swissky Version:1.0
-usage: graphqlmap.py [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]] [--headers [HEADERS]] [--json [USE_JSON]] [--proxy [PROXY]]
+usage: graphqlmap [-h] [-u URL] [-v [VERBOSITY]] [--method [METHOD]] [--headers [HEADERS]] [--json [USE_JSON]] [--proxy [PROXY]]
 
 optional arguments:
   -h, --help           show this help message and exit
@@ -48,12 +48,13 @@ optional arguments:
 
 Development setup
 
-```ps1
-python -m venv .venv
+```bash
+# In the project directory
+python3 -m venv .venv
 source .venv/bin/activate
-pip install --editable .
-pip install -r requirements.txt
-./bin/graphqlmap -u http://127.0.0.1:5013/graphql
+pip3 install --editable .
+pip3 install -r requirements.txt
+python3 main.py -u http://127.0.0.1:5013/graphql
 ```
 
 
@@ -122,7 +123,7 @@ GraphQLmap > {doctors(options: 1, search: "{ \"lastName\": { \"$regex\": \"Admin
 
 It also works with `mutations`, they must be written in a single line.
 
-```ps1
+```powershell
 # ./bin/graphqlmap -u http://127.0.0.1:5013/graphql --proxy http://127.0.0.1:8080 --method POST
 GraphQLmap > mutation { importPaste(host:"localhost", port:80, path:"/ ; id", scheme:"http"){ result }}
 {

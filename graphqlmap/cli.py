@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
-
 try:
     import readline
 except ImportError:
-    import pyreadline as readline
+    import pyreadline3 as readline
 
 from graphqlmap.attacks import *
 import urllib3
@@ -36,9 +34,10 @@ class GraphQLmap(object):
         self.method = args_graphql.method
         self.headers = None if not args_graphql.headers else json.loads(args_graphql.headers)
         self.use_json = True if args_graphql.use_json else False
-        self.proxy =  { 
-            "http"  : args_graphql.proxy, 
-        }
+        # self.proxy =  {
+        #     "http"  : args_graphql.proxy, 
+        # }
+        self.proxy = args_graphql.proxy
 
         while True:
             query = input("GraphQLmap > ")
@@ -74,9 +73,11 @@ class GraphQLmap(object):
                 print(self.headers)
                 exec_advanced(self.url, self.method, query, self.headers, self.use_json, self.proxy)
 
-
-if __name__ == "__main__":
+def main():
     readline.set_completer(auto_completer)
     readline.parse_and_bind("tab: complete")
     args = parse_args()
     GraphQLmap(args)
+
+if __name__ == "__main__":
+    main()

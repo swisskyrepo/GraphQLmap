@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from graphqlmap.utils import *
 import re
 import time
